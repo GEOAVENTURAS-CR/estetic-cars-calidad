@@ -13,6 +13,7 @@
  * - Dashboard preliminar
  */
 import "./calidad.js";
+import "./dashboard.js";
 import {
   supabase,
   CONFIG,
