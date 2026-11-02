@@ -1,20 +1,19 @@
 
 /*
  * ESTETIC CARS CR
- * DASHBOARD OPERATIVO V1.4
- * Control mensual y pendientes por etapa
+ * GESTION DE CALIDAD
+ * DASHBOARD OPERATIVO V1.4.1
+ *
+ * Periodo mensual automatico
+ * Zona horaria Costa Rica
+ * Filtro de sedes
+ * Indicadores por etapa
+ * Consulta de expedientes
  */
 
 import { supabase } from "./config.js";
 
-const el = id => document.getElementById(id);
-
-const MESES = [
-  "Enero", "Febrero", "Marzo", "Abril",
-  "Mayo", "Junio", "Julio", "Agosto",
-  "Septiembre", "Octubre", "Noviembre",
-  "Diciembre"
-];
+const $d = id => document.getElementById(id);
 
 const ETAPAS = [
   "Pendientes de revisión",
@@ -28,85 +27,164 @@ const ETAPAS = [
 ];
 
 let informacion = null;
-let etapaSeleccionada = "";
+let etapaActual = "";
 let sedesCargadas = false;
+let consultaEnCurso = 0;
 
-const actual = new Date();
+/* FECHA ACTUAL EN COSTA RICA */
 
-/* CREAR INTERFAZ */
+function mesCostaRica() {
+  const partes = new Intl.DateTimeFormat(
+    "en-US",
+    {
+      timeZone: "America/Costa_Rica",
+      year: "numeric",
+      month: "2-digit"
+    }
+  ).formatToParts(new Date());
 
-const dashboard = el("dashboard");
+  const anio = partes.find(
+    p => p.type === "year"
+  ).value;
 
-const contenidoAnterior = [
-  el("resumen"),
-  el("btnActualizar")
-];
+  const mes = partes.find(
+    p => p.type === "month"
+  ).value;
 
-contenidoAnterior.forEach(nodo => {
-  if (nodo) nodo.classList.add("hidden");
-});
+  return `${anio}-${mes}`;
+}
 
-const encabezado = dashboard.querySelector(".muted");
-if (encabezado) encabezado.classList.add("hidden");
+function fechaVisible(valor) {
+  if (!valor) return "—";
+
+  const partes = String(valor)
+    .slice(0, 10)
+    .split("-");
+
+  return partes.length === 3
+    ? `${partes[2]}/${partes[1]}/${partes[0]}`
+    : String(valor);
+}
+
+function tituloMes(periodo) {
+  if (!/^\d{4}-\d{2}$/.test(periodo)) {
+    return "Periodo no válido";
+  }
+
+  const [anio, mes] = periodo.split("-").map(Number);
+
+  return new Intl.DateTimeFormat(
+    "es-CR",
+    {
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC"
+    }
+  ).format(new Date(Date.UTC(anio, mes - 1, 1)));
+}
+
+function informar(mensaje, error = false) {
+  const elemento = $d("dashMensaje");
+
+  elemento.textContent = mensaje;
+  elemento.style.color =
+    error ? "#b42318" : "#13754d";
+}
+
+/* ESTRUCTURA VISUAL */
+
+const seccionDashboard = $d("dashboard");
+
+$d("resumen")?.classList.add("hidden");
+$d("btnActualizar")?.classList.add("hidden");
+
+seccionDashboard
+  .querySelector(".muted")
+  ?.classList.add("hidden");
 
 const interfaz = document.createElement("div");
-interfaz.id = "operativoV14";
+interfaz.id = "dashboardOperativo";
 
 interfaz.innerHTML = `
   <div class="panel">
+
     <h3>Periodo de análisis</h3>
 
-    <div class="form-grid">
+    <div class="form-grid"
+      style="grid-template-columns:
+             repeat(auto-fit,minmax(190px,1fr))">
+
       <div class="field">
-        <label for="dashMes">Mes</label>
-        <select id="dashMes"></select>
+        <label for="dashPeriodo">
+          Seleccionar mes y año
+        </label>
+
+        <input
+          id="dashPeriodo"
+          type="month"
+          required>
       </div>
 
       <div class="field">
-        <label for="dashAnio">Año</label>
-        <select id="dashAnio"></select>
-      </div>
+        <label for="dashSede">
+          Sede
+        </label>
 
-      <div class="field">
-        <label for="dashSede">Sede</label>
         <select id="dashSede">
-          <option value="">Todas las sedes</option>
+          <option value="">
+            Todas las sedes
+          </option>
         </select>
       </div>
+
     </div>
 
-    <button id="dashConsultar"
-      class="primary" type="button">
-      Consultar periodo
-    </button>
+    <div class="actions">
+      <button
+        id="dashMesActual"
+        class="secondary"
+        type="button">
+        Volver al mes actual
+      </button>
+    </div>
 
     <p id="dashMensaje"
-      class="feedback" role="status"></p>
+      class="feedback"
+      role="status"></p>
   </div>
 
   <div id="dashResultados" class="hidden">
 
-    <div id="dashTarjetas" class="metrics"></div>
-
     <div class="panel">
-      <h3>Control de etapas operativas</h3>
-
+      <h3 id="dashPeriodoTitulo">
+        Resumen mensual
+      </h3>
       <p class="muted">
-        Seleccione una etapa para visualizar
-        los expedientes correspondientes.
+        Expedientes recibidos en el mes
+        seleccionado y su estado actual.
       </p>
-
-      <div id="dashEtapas"></div>
+      <div id="dashTarjetas" class="metrics"></div>
     </div>
 
     <div class="panel">
+      <h3>Expedientes por etapa</h3>
+      <p class="muted">
+        Seleccione una etapa para consultar
+        sus expedientes.
+      </p>
+      <div id="dashEtapas"></div>
+    </div>
+
+    <div class="panel" id="dashListadoPanel">
+
       <h3 id="dashTituloListado">
         Detalle de expedientes
       </h3>
 
       <div class="filters">
-        <input id="dashBuscar"
-          placeholder="Filtrar por placa o consecutivo">
+        <input
+          id="dashBuscar"
+          placeholder="Buscar por placa o consecutivo">
       </div>
 
       <div class="table-wrap">
@@ -118,8 +196,8 @@ interfaz.innerHTML = `
               <th>Sede</th>
               <th>Tipo</th>
               <th>Estado</th>
-              <th>Etapa operativa</th>
-              <th>Fecha de ingreso</th>
+              <th>Etapa</th>
+              <th>Fecha recibida</th>
             </tr>
           </thead>
 
@@ -129,51 +207,17 @@ interfaz.innerHTML = `
 
       <p id="dashTotalListado"
         class="muted"></p>
+
     </div>
 
   </div>
 `;
 
-dashboard.append(interfaz);
+seccionDashboard.append(interfaz);
 
-/* CARGAR MESES */
+$d("dashPeriodo").value = mesCostaRica();
 
-MESES.forEach((nombre, indice) => {
-  const opcion = new Option(
-    nombre,
-    String(indice + 1)
-  );
-
-  el("dashMes").add(opcion);
-});
-
-el("dashMes").value =
-  String(actual.getMonth() + 1);
-
-/* CARGAR AÑOS */
-
-for (
-  let anio = Math.max(2026, actual.getFullYear());
-  anio >= 2026;
-  anio--
-) {
-  el("dashAnio").add(
-    new Option(String(anio), String(anio))
-  );
-}
-
-el("dashAnio").value =
-  String(actual.getFullYear());
-
-function informar(texto, error = false) {
-  const elemento = el("dashMensaje");
-
-  elemento.textContent = texto;
-  elemento.style.color =
-    error ? "#b42318" : "#13754d";
-}
-
-/* CARGAR SEDES */
+/* CATALOGOS */
 
 async function cargarSedes() {
   if (sedesCargadas) return;
@@ -186,77 +230,33 @@ async function cargarSedes() {
 
   const catalogos = typeof data === "string"
     ? JSON.parse(data)
-    : data;
+    : data ?? {};
 
-  for (const sede of catalogos?.sedes ?? []) {
+  const select = $d("dashSede");
+
+  for (const sede of catalogos.sedes ?? []) {
     if (sede.activo === false) continue;
 
-    el("dashSede").add(new Option(
-      sede.nombre,
-      String(sede.id)
-    ));
+    select.add(
+      new Option(sede.nombre, String(sede.id))
+    );
   }
 
   sedesCargadas = true;
 }
 
-/* CONSULTA CENTRAL */
+/* INDICADORES */
 
-async function consultarDashboard() {
-  el("dashConsultar").disabled = true;
-
-  informar("Consultando datos del periodo...");
-
-  try {
-    await cargarSedes();
-
-    const { data, error } = await supabase.rpc(
-      "dashboard_operativo_mes",
-      {
-        p_anio: Number(el("dashAnio").value),
-        p_mes: Number(el("dashMes").value),
-        p_sede_id: el("dashSede").value
-          ? Number(el("dashSede").value)
-          : null
-      }
-    );
-
-    if (error) throw error;
-
-    informacion = data;
-
-    el("dashResultados")
-      .classList.remove("hidden");
-
-    etapaSeleccionada = "";
-
-    renderizarTarjetas();
-    renderizarEtapas();
-    renderizarCasos();
-
-    informar(
-      "Periodo actualizado correctamente.",
-      false
-    );
-
-  } catch (error) {
-    console.error(error);
-
-    informar(
-      "Error al consultar: " + error.message,
-      true
-    );
-
-  } finally {
-    el("dashConsultar").disabled = false;
-  }
+function cantidadEtapa(nombre) {
+  return Number(
+    informacion?.etapas?.find(
+      e => e.etapa === nombre
+    )?.cantidad ?? 0
+  );
 }
 
-/* TARJETAS DE CONTROL */
-
-function tarjeta(titulo, valor, etapa = "") {
+function crearTarjeta(titulo, cantidad, filtro) {
   const boton = document.createElement("button");
-
   boton.type = "button";
   boton.className = "metric";
   boton.style.textAlign = "left";
@@ -265,140 +265,137 @@ function tarjeta(titulo, valor, etapa = "") {
   const etiqueta = document.createElement("span");
   etiqueta.textContent = titulo;
 
-  const cantidad = document.createElement("strong");
-  cantidad.textContent = String(valor);
+  const valor = document.createElement("strong");
+  valor.textContent = String(cantidad);
 
-  boton.append(etiqueta, cantidad);
+  boton.append(etiqueta, valor);
 
   boton.addEventListener("click", () => {
-    etapaSeleccionada = etapa;
+    etapaActual = filtro;
     renderizarCasos();
 
-    el("dashTituloListado")
-      .scrollIntoView({
-        behavior:"smooth",
-        block:"start"
-      });
+    $d("dashListadoPanel").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
   });
 
   return boton;
 }
 
-function cantidadEtapa(nombre) {
-  const item = (informacion?.etapas ?? [])
-    .find(d => d.etapa === nombre);
-
-  return Number(item?.cantidad ?? 0);
-}
-
 function renderizarTarjetas() {
-  const contenedor = el("dashTarjetas");
-  contenedor.replaceChildren();
+  const panel = $d("dashTarjetas");
+  panel.replaceChildren();
 
-  const indicadores = [
-    ["Expedientes recibidos",
-      informacion?.total ?? 0, ""],
-    ["Expedientes activos",
-      informacion?.activos ?? 0, "ACTIVOS"],
-    ["Pendientes de validación",
-      cantidadEtapa("Pendientes de validación"),
-      "Pendientes de validación"],
-    ["Pendientes de cierre",
-      cantidadEtapa("Pendientes de cierre"),
-      "Pendientes de cierre"],
-    ["Pendientes de corrección",
+  const tarjetas = [
+    [
+      "Expedientes recibidos",
+      informacion?.total ?? 0,
+      ""
+    ],
+    [
+      "Expedientes activos",
+      informacion?.activos ?? 0,
+      "ACTIVOS"
+    ],
+    [
+      "Pendientes de revisión",
+      cantidadEtapa("Pendientes de revisión"),
+      "Pendientes de revisión"
+    ],
+    [
+      "Pendientes de corrección",
       cantidadEtapa("Pendientes de corrección"),
-      "Pendientes de corrección"],
-    ["En evaluación",
-      cantidadEtapa("En evaluación"),
-      "En evaluación"],
-    ["Correcciones en proceso",
+      "Pendientes de corrección"
+    ],
+    [
+      "En proceso",
       cantidadEtapa("Correcciones en proceso"),
-      "Correcciones en proceso"],
-    ["Cerrados",
+      "Correcciones en proceso"
+    ],
+    [
+      "Pendientes de validación",
+      cantidadEtapa("Pendientes de validación"),
+      "Pendientes de validación"
+    ],
+    [
+      "Pendientes de cierre",
+      cantidadEtapa("Pendientes de cierre"),
+      "Pendientes de cierre"
+    ],
+    [
+      "Cerrados",
       informacion?.cerrados ?? 0,
-      "Cerrados"]
+      "Cerrados"
+    ]
   ];
 
-  indicadores.forEach(item => {
-    contenedor.append(
-      tarjeta(item[0], item[1], item[2])
+  for (const [titulo, cantidad, filtro] of tarjetas) {
+    panel.append(
+      crearTarjeta(titulo, cantidad, filtro)
     );
-  });
-}
-
-/* DESGLOSE POR ETAPAS */
-
-function renderizarEtapas() {
-  const contenedor = el("dashEtapas");
-  contenedor.replaceChildren();
-
-  const total =
-    Number(informacion?.activos ?? 0);
-
-  for (const nombre of ETAPAS) {
-    const cantidad = cantidadEtapa(nombre);
-
-    const fila = document.createElement("button");
-    fila.type = "button";
-    fila.className = "secondary";
-    fila.style.display = "flex";
-    fila.style.width = "100%";
-    fila.style.justifyContent = "space-between";
-    fila.style.marginBottom = "9px";
-    fila.style.gap = "12px";
-
-    const etiqueta = document.createElement("span");
-    etiqueta.textContent = nombre;
-
-    const valor = document.createElement("strong");
-    valor.textContent = String(cantidad);
-
-    fila.append(etiqueta, valor);
-
-    fila.addEventListener("click", () => {
-      etapaSeleccionada = nombre;
-      renderizarCasos();
-    });
-
-    contenedor.append(fila);
   }
 }
 
-/* FORMATEAR FECHA */
+/* DISTRIBUCION POR ETAPAS */
 
-function formatearFecha(fecha) {
-  if (!fecha) return "—";
+function renderizarEtapas() {
+  const panel = $d("dashEtapas");
+  panel.replaceChildren();
 
-  const partes = String(fecha)
-    .slice(0, 10)
-    .split("-");
+  for (const etapa of ETAPAS) {
+    const boton = document.createElement("button");
+    boton.type = "button";
+    boton.className = "secondary";
 
-  return partes.length === 3
-    ? `${partes[2]}/${partes[1]}/${partes[0]}`
-    : String(fecha);
+    boton.style.display = "flex";
+    boton.style.width = "100%";
+    boton.style.justifyContent = "space-between";
+    boton.style.gap = "12px";
+    boton.style.marginBottom = "8px";
+
+    const nombre = document.createElement("span");
+    nombre.textContent = etapa;
+
+    const cantidad = document.createElement("strong");
+    cantidad.textContent = String(cantidadEtapa(etapa));
+
+    boton.append(nombre, cantidad);
+
+    boton.addEventListener("click", () => {
+      etapaActual = etapa;
+      renderizarCasos();
+
+      $d("dashListadoPanel").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+
+    panel.append(boton);
+  }
 }
 
-/* MOSTRAR CASOS SEGUN ETAPA */
+/* DETALLE DE CASOS */
 
 function renderizarCasos() {
-  const tabla = el("dashTabla");
+  const tabla = $d("dashTabla");
   tabla.replaceChildren();
 
   let casos = informacion?.casos ?? [];
 
-  if (etapaSeleccionada === "ACTIVOS") {
-    casos = casos.filter(c =>
-      c.estado !== "Cerrado"
+  if (etapaActual === "ACTIVOS") {
+    casos = casos.filter(
+      c => c.estado !== "Cerrado"
     );
 
-  } else if (etapaSeleccionada) {
-    casos = casos.filter(c =>
-      c.etapa === etapaSeleccionada
+  } else if (etapaActual) {
+    casos = casos.filter(
+      c => c.etapa === etapaActual
     );
   }
 
-  const buscar = el("dashBuscar")
+  const buscar = $d("dashBuscar")
     .value.trim().toLowerCase();
 
   if (buscar) {
@@ -410,62 +407,149 @@ function renderizarCasos() {
     );
   }
 
-  const titulo = etapaSeleccionada === "ACTIVOS"
-    ? "Expedientes activos"
-    : etapaSeleccionada ||
-      "Todos los expedientes del periodo";
+  const titulo =
+    etapaActual === "ACTIVOS"
+      ? "Expedientes activos"
+      : etapaActual || "Todos los expedientes del mes";
 
-  el("dashTituloListado").textContent = titulo;
+  $d("dashTituloListado").textContent = titulo;
 
   for (const caso of casos) {
     const fila = document.createElement("tr");
 
-    const valores = [
+    const datos = [
       caso.consecutivo,
       caso.placa,
       caso.sede,
       caso.tipo,
       caso.estado,
       caso.etapa,
-      formatearFecha(caso.fecha)
+      fechaVisible(caso.fecha)
     ];
 
-    valores.forEach(valor => {
+    for (const dato of datos) {
       const celda = document.createElement("td");
-      celda.textContent = String(valor ?? "—");
+      celda.textContent = String(dato ?? "—");
       fila.append(celda);
-    });
+    }
 
     tabla.append(fila);
   }
 
-  el("dashTotalListado").textContent =
-    `${casos.length} expedientes encontrados.`;
+  $d("dashTotalListado").textContent =
+    `${casos.length} expedientes encontrados`;
+}
+
+/* CONSULTA A SUPABASE */
+
+async function consultarDashboard() {
+  const periodo = $d("dashPeriodo").value;
+
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(periodo)) {
+    informar("Seleccione un mes válido.", true);
+    return;
+  }
+
+  const [anio, mes] =
+    periodo.split("-").map(Number);
+
+  const secuencia = ++consultaEnCurso;
+
+  informar("Consultando información del periodo...");
+
+  try {
+    await cargarSedes();
+
+    const { data, error } = await supabase.rpc(
+      "dashboard_operativo_mes",
+      {
+        p_anio: anio,
+        p_mes: mes,
+        p_sede_id: $d("dashSede").value
+          ? Number($d("dashSede").value)
+          : null
+      }
+    );
+
+    if (secuencia !== consultaEnCurso) return;
+
+    if (error) throw error;
+
+    informacion = data;
+    etapaActual = "";
+
+    $d("dashBuscar").value = "";
+    $d("dashResultados")
+      .classList.remove("hidden");
+
+    const nombre = tituloMes(periodo);
+
+    $d("dashPeriodoTitulo").textContent =
+      "Resumen: " +
+      nombre.charAt(0).toUpperCase() +
+      nombre.slice(1);
+
+    renderizarTarjetas();
+    renderizarEtapas();
+    renderizarCasos();
+
+    informar("Indicadores actualizados.", false);
+
+  } catch (error) {
+    if (secuencia !== consultaEnCurso) return;
+
+    console.error(error);
+    informacion = null;
+
+    $d("dashResultados").classList.add("hidden");
+
+    informar(
+      "No se pudieron consultar los indicadores: " +
+      error.message,
+      true
+    );
+  }
 }
 
 /* EVENTOS */
 
-el("dashConsultar").addEventListener(
-  "click",
+$d("dashPeriodo").addEventListener(
+  "change",
   consultarDashboard
 );
 
-el("dashBuscar").addEventListener(
+$d("dashSede").addEventListener(
+  "change",
+  consultarDashboard
+);
+
+$d("dashMesActual").addEventListener(
+  "click",
+  () => {
+    $d("dashPeriodo").value = mesCostaRica();
+    consultarDashboard();
+  }
+);
+
+$d("dashBuscar").addEventListener(
   "input",
   renderizarCasos
 );
 
-document.querySelector(
-  '[data-page="dashboard"]'
-)?.addEventListener("click", () => {
-  consultarDashboard();
-});
+document.addEventListener(
+  "ec:dashboard-visible",
+  () => {
+    // Al ingresar se carga el mes actual.
+    // Si el usuario cambia de sección y regresa,
+    // conserva el periodo seleccionado.
+    consultarDashboard();
+  }
+);
 
-/* ORDEN DEL MENU */
+/* MI PERFIL SIEMPRE AL FINAL */
 
 function ordenarMenu() {
   const menu = document.getElementById("menu");
-
   const perfil = menu?.querySelector(
     '[data-page="perfil"]'
   );
