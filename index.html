@@ -3,406 +3,998 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Estetic Cars | Gestión de Calidad</title>
+
 <style>
-:root{
- --azul:#07549a;--oscuro:#123456;--fondo:#f2f6fb;
- --borde:#e0e8f0;--texto:#203247;--gris:#718096;
+:root {
+  --azul:#07549a;
+  --azulOscuro:#073c70;
+  --fondo:#f2f6fb;
+  --texto:#203247;
+  --gris:#718096;
+  --borde:#dfe8f1;
+  --verde:#147a52;
 }
+
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--fondo);color:var(--texto)}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.app{display:flex;min-height:100vh}
-.sidebar{width:245px;background:#073c70;color:white;padding:25px 16px;flex-shrink:0}
-.brand{padding:8px 10px 28px;border-bottom:1px solid #ffffff30}
-.brand h2{font-size:19px;margin:0}
-.brand small{color:#afcce8;font-size:11px;letter-spacing:1px}
-.menu{margin-top:24px;display:grid;gap:7px}
-.menu button{width:100%;border:0;background:none;color:#d6e7f9;text-align:left;padding:14px;border-radius:9px}
-.menu button.active,.menu button:hover{background:#ffffff20;color:white}
-main{flex:1;min-width:0}
-header{background:white;padding:20px 30px;border-bottom:1px solid var(--borde);display:flex;justify-content:space-between;align-items:center;gap:12px}
-header strong{color:var(--oscuro);font-size:18px}
-header span{color:var(--gris);font-size:13px}
-.content{padding:30px;max-width:1500px;margin:auto}
-.heading{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:22px;flex-wrap:wrap}
-h1{margin:0;font-size:26px;color:var(--oscuro)}
-.sub{color:var(--gris);font-size:13px;margin-top:7px}
-.btn{border:0;border-radius:8px;background:var(--azul);color:white;padding:11px 17px;font-weight:bold}
-.btn.alt{background:#e8f1f9;color:var(--azul)}
-.filters{display:flex;gap:12px;flex-wrap:wrap}
-select,input,textarea{border:1px solid #d6e0ec;border-radius:8px;padding:11px;background:white;max-width:100%}
-.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px;margin-bottom:22px}
-.card{background:white;border:1px solid var(--borde);border-radius:12px;padding:21px;box-shadow:0 3px 12px #143d6410}
-.card .label{color:var(--gris);font-size:13px}
-.card .number{font-size:31px;font-weight:bold;color:var(--oscuro);margin-top:14px}
-.card .foot{font-size:12px;color:var(--gris);margin-top:10px}
-.panels{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px}
-h3{margin:0 0 20px;color:var(--oscuro);font-size:16px}
-.bar-row{margin-bottom:17px}
-.bar-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px}
-.track{height:11px;background:#e8eff6;border-radius:20px;overflow:hidden}
-.fill{height:100%;background:#2077bd;border-radius:20px}
-.fill.second{background:#49a2d2}
-.fill.third{background:#8ebedc}
-table{border-collapse:collapse;width:100%;text-align:left}
-th{font-size:12px;color:#60748b;background:#f5f8fc;font-weight:bold}
-th,td{padding:13px;border-bottom:1px solid #ebeff4}
-td{font-size:13px}
-.tablewrap{overflow-x:auto}
-.tag{display:inline-block;padding:6px 9px;border-radius:7px;font-size:11px;background:#e6eef8;color:#215a9a}
-.tag.closed{background:#dff4e8;color:#157444}
-.tag.review{background:#fff0d5;color:#92610a}
-.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.field{display:grid;gap:7px}
-.field label{font-size:12px;font-weight:bold;color:#51647a}
-.field input,.field select,.field textarea{width:100%}
-.full{grid-column:1/-1}
-.notice{padding:14px;background:#fff6e4;border:1px solid #f1dcae;border-radius:9px;color:#78570d;font-size:13px;margin-bottom:22px}
-.hidden{display:none}
-.empty{color:var(--gris);padding:22px;text-align:center}
-@media(max-width:950px){
- .metrics{grid-template-columns:repeat(2,1fr)}
- .panels{grid-template-columns:1fr}
- .sidebar{width:190px}
+
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--fondo);
+  color:var(--texto);
 }
+
+button,input{font:inherit}
+button{cursor:pointer}
+
+.hidden{display:none!important}
+
+/* ACCESO */
+
+.login-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:linear-gradient(140deg,#062f59,#0968af);
+}
+
+.login-card{
+  width:100%;
+  max-width:410px;
+  background:white;
+  border-radius:17px;
+  padding:35px;
+  box-shadow:0 18px 50px #001b3450;
+}
+
+.login-logo{
+  width:58px;height:58px;
+  display:grid;place-items:center;
+  border-radius:15px;
+  background:#e8f1fc;
+  color:var(--azul);
+  font-size:30px;
+  margin-bottom:20px;
+}
+
+.login-card h1{
+  font-size:24px;
+  margin:0 0 8px;
+  color:var(--azulOscuro);
+}
+
+.login-card p{
+  color:var(--gris);
+  font-size:13px;
+  line-height:1.6;
+  margin-bottom:25px;
+}
+
+.field{margin-bottom:18px}
+
+.field label{
+  display:block;
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.field input{
+  width:100%;
+  padding:13px;
+  border:1px solid var(--borde);
+  border-radius:8px;
+  outline:none;
+}
+
+.field input:focus{
+  border-color:var(--azul);
+}
+
+.btn{
+  border:0;
+  background:var(--azul);
+  color:white;
+  padding:12px 18px;
+  border-radius:8px;
+  font-weight:bold;
+}
+
+.btn:disabled{opacity:.6;cursor:wait}
+.btn-light{background:#e5eff9;color:var(--azul)}
+
+.btn-full{width:100%}
+
+.message{
+  font-size:13px;
+  line-height:1.5;
+  margin-top:17px;
+  color:#a63333;
+  min-height:18px;
+}
+
+.login-footer{
+  color:#a9bed3;
+  font-size:11px;
+  text-align:center;
+  margin-top:22px;
+}
+
+/* APLICACIÓN */
+
+.app{display:flex;min-height:100vh}
+
+.sidebar{
+  width:245px;
+  flex-shrink:0;
+  background:var(--azulOscuro);
+  color:white;
+  padding:25px 15px;
+}
+
+.brand{
+  padding:8px 10px 24px;
+  border-bottom:1px solid #ffffff30;
+}
+
+.brand small{
+  font-size:11px;
+  color:#b5d3ec;
+  letter-spacing:1px;
+}
+
+.brand h2{
+  font-size:19px;
+  margin:8px 0 0;
+}
+
+.menu{
+  display:grid;
+  gap:7px;
+  margin-top:24px;
+}
+
+.menu button{
+  background:none;
+  color:#d4e4f5;
+  border:0;
+  border-radius:8px;
+  padding:13px;
+  text-align:left;
+  width:100%;
+}
+
+.menu button.active,
+.menu button:hover{
+  background:#ffffff22;
+  color:white;
+}
+
+.main{
+  flex:1;
+  min-width:0;
+}
+
+.topbar{
+  background:white;
+  padding:18px 28px;
+  display:flex;
+  gap:15px;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--borde);
+}
+
+.topbar strong{color:var(--azulOscuro)}
+
+.user-info{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.user-info span{
+  color:var(--gris);
+  font-size:12px;
+}
+
+.content{
+  max-width:1450px;
+  margin:auto;
+  padding:30px;
+}
+
+h1{
+  font-size:26px;
+  margin:0 0 7px;
+  color:var(--azulOscuro);
+}
+
+h3{
+  font-size:16px;
+  color:var(--azulOscuro);
+  margin:0 0 17px;
+}
+
+.subtitle{
+  color:var(--gris);
+  font-size:13px;
+  margin:0 0 24px;
+}
+
+.notice{
+  background:#fff5df;
+  border:1px solid #ecd7a5;
+  color:#775a18;
+  border-radius:9px;
+  padding:14px;
+  font-size:13px;
+  line-height:1.5;
+  margin-bottom:25px;
+}
+
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:17px;
+  margin-bottom:22px;
+}
+
+.card{
+  background:white;
+  border:1px solid var(--borde);
+  border-radius:12px;
+  padding:22px;
+  box-shadow:0 3px 12px #143d6410;
+}
+
+.metric-label{
+  font-size:12px;
+  color:var(--gris);
+}
+
+.metric-value{
+  font-size:30px;
+  color:var(--azulOscuro);
+  font-weight:bold;
+  margin-top:15px;
+}
+
+.metric-foot{
+  color:var(--gris);
+  font-size:12px;
+  margin-top:8px;
+}
+
+.panels{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-bottom:22px;
+}
+
+.bar-item{margin-bottom:19px}
+
+.bar-top{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-bottom:8px;
+}
+
+.track{
+  background:#e5edf5;
+  height:10px;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.fill{
+  background:#2479bf;
+  height:100%;
+  border-radius:20px;
+}
+
+.status{
+  display:inline-block;
+  background:#e3f3e9;
+  color:var(--verde);
+  padding:7px 11px;
+  border-radius:7px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.test-row{
+  border-bottom:1px solid var(--borde);
+  padding:13px 0;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+}
+
+.test-row:last-child{border:0}
+
+.test-row span{
+  font-size:13px;
+}
+
+.info-table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.info-table td{
+  padding:13px;
+  border-bottom:1px solid var(--borde);
+  font-size:13px;
+}
+
+.info-table td:last-child{
+  text-align:right;
+  font-weight:bold;
+}
+
+@media(max-width:950px){
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .panels{grid-template-columns:1fr}
+  .sidebar{width:195px}
+}
+
 @media(max-width:650px){
- .app{display:block}
- .sidebar{width:100%;padding:12px}
- .brand{padding:6px 8px 12px}
- .menu{display:flex;overflow-x:auto;margin-top:12px}
- .menu button{white-space:nowrap;width:auto;padding:11px}
- header{padding:15px}
- .content{padding:16px}
- .metrics{gap:10px}
- .card{padding:15px}
- .card .number{font-size:25px}
- .formgrid{grid-template-columns:1fr}
+  .app{display:block}
+  .sidebar{width:100%;padding:13px}
+  .brand{padding:5px 8px}
+  .menu{
+    display:flex;
+    overflow-x:auto;
+    margin-top:12px;
+  }
+  .menu button{white-space:nowrap;width:auto}
+  .topbar{padding:14px;flex-wrap:wrap}
+  .content{padding:17px}
+  .card{padding:16px}
+  .metric-value{font-size:25px}
 }
 </style>
 </head>
+
 <body>
-<div class="app">
-<aside class="sidebar">
- <div class="brand">
-  <small>ESTETIC CARS CR</small>
-  <h2>Gestión de Calidad</h2>
- </div>
- <nav class="menu">
-  <button class="active" data-view="dashboard">▦ Dashboard</button>
-  <button data-view="registro">＋ Registrar incidencia</button>
-  <button data-view="casos">☷ Control de casos</button>
-  <button data-view="reportes">▥ Reportes y KPIs</button>
-  <button data-view="administracion">⚙ Administración</button>
- </nav>
-</aside>
 
-<main>
-<header>
- <strong>Centro de Control de Calidad</strong>
- <span>Versión demostrativa V1.0</span>
-</header>
+<!-- PANTALLA DE ACCESO -->
 
-<div class="content">
-<div class="notice">
- DEMOSTRACIÓN: Los datos son ficticios y no están conectados con Supabase.
- No ingresés información real de clientes todavía.
-</div>
-
-<section id="dashboard">
- <div class="heading">
+<div id="loginScreen" class="login-screen">
   <div>
-   <h1>Dashboard Ejecutivo</h1>
-   <div class="sub">Indicadores de calidad y reprocesos</div>
-  </div>
-  <div class="filters">
-   <select id="sede" aria-label="Filtrar sede">
-    <option value="Todas">Todas las sedes</option>
-    <option>Escazú</option>
-    <option>Heredia</option>
-   </select>
-   <button class="btn" data-view="registro">+ Nuevo caso</button>
-  </div>
- </div>
- <div class="metrics" id="metricas"></div>
- <div class="panels">
-  <div class="card">
-   <h3>Incidencias por clasificación</h3>
-   <div id="clasificacion"></div>
-  </div>
-  <div class="card">
-   <h3>Distribución por decisión técnica</h3>
-   <div id="decisiones"></div>
-  </div>
-  <div class="card">
-   <h3>Distribución por sede</h3>
-   <div id="sedes"></div>
-  </div>
-  <div class="card">
-   <h3>Indicadores de gestión</h3>
-   <div id="indicadores"></div>
-  </div>
- </div>
- <div class="card">
-  <h3>Últimas incidencias registradas</h3>
-  <div class="tablewrap" id="recientes"></div>
- </div>
-</section>
+    <div class="login-card">
 
-<section id="registro" class="hidden">
- <div class="heading">
-  <div><h1>Registrar incidencia</h1>
-   <div class="sub">Formulario único de reclamos, garantías y reprocesos</div>
-  </div>
- </div>
- <div class="card">
-  <form id="formulario" class="formgrid">
-   <div class="field">
-    <label>Fecha de recibido</label>
-    <input type="date" id="fecha" required>
-   </div>
-   <div class="field">
-    <label>Sede</label>
-    <select id="sedeForm" required>
-     <option value="">Seleccionar</option>
-     <option>Escazú</option><option>Heredia</option>
-    </select>
-   </div>
-   <div class="field">
-    <label>Placa</label>
-    <input id="placa" maxlength="12" required placeholder="Ej. ABC123">
-   </div>
-   <div class="field">
-    <label>Vehículo</label>
-    <input id="vehiculo" placeholder="Marca, modelo y año">
-   </div>
-   <div class="field">
-    <label>Tipo de cliente</label>
-    <select id="cliente" required>
-     <option>Particular</option><option>Aseguradora</option>
-    </select>
-   </div>
-   <div class="field">
-    <label>Aseguradora</label>
-    <select id="aseguradora" disabled>
-     <option value="">No aplica</option>
-     <option>INS</option><option>ASSA</option>
-     <option>Quálitas</option><option>LAFISE</option>
-     <option>MNK</option>
-    </select>
-   </div>
-   <div class="field">
-    <label>Tipo de incidencia</label>
-    <select id="tipo" required>
-     <option>Reclamo</option><option>Garantía</option>
-     <option>Reproceso</option>
-    </select>
-   </div>
-   <div class="field">
-    <label>Hoja de garantía / evidencias</label>
-    <input type="file" accept="image/*,.pdf" multiple>
-   </div>
-   <div class="field full">
-    <label>Descripción del problema</label>
-    <textarea id="descripcion" rows="5" required
-     placeholder="Describí la incidencia reportada..."></textarea>
-   </div>
-   <div class="full">
-    <button class="btn" type="submit">Validar formulario de demostración</button>
-   </div>
-  </form>
- </div>
-</section>
+      <div class="login-logo">✓</div>
 
-<section id="casos" class="hidden">
- <div class="heading">
-  <div><h1>Control de casos</h1>
-   <div class="sub">Seguimiento centralizado de incidencias</div>
-  </div>
-  <button class="btn" data-view="registro">+ Registrar</button>
- </div>
- <div class="card">
-  <div class="filters" style="margin-bottom:20px">
-   <input id="buscar" placeholder="Buscar placa o consecutivo">
-   <select id="filtroEstado">
-    <option value="">Todos los estados</option>
-    <option>Registrado</option><option>En revisión</option>
-    <option>En proceso</option><option>Cerrado</option>
-   </select>
-  </div>
-  <div id="listado" class="tablewrap"></div>
- </div>
-</section>
+      <h1>Estetic Cars CR</h1>
+      <p>
+        Gestión de Calidad<br>
+        Plataforma de reclamos, garantías y reprocesos.
+      </p>
 
-<section id="reportes" class="hidden">
- <h1>Reportes y KPIs</h1>
- <p class="sub">Análisis ejecutivo y tendencias operativas</p>
- <div class="panels">
-  <div class="card">
-   <h3>Reclamos recibidos frente a aceptados</h3>
-   <div id="reporteAceptacion"></div>
-  </div>
-  <div class="card">
-   <h3>Horas e impacto económico</h3>
-   <div id="reporteHoras"></div>
-  </div>
- </div>
- <div class="card">
-  <h3>Próximos indicadores</h3>
-  <p class="sub">Tiempos de revisión, causas raíz, responsables,
-  técnicos, reincidencias y tendencias mensuales.</p>
- </div>
-</section>
+      <form id="loginForm">
+        <div class="field">
+          <label for="email">Correo empresarial</label>
+          <input
+            type="email"
+            id="email"
+            autocomplete="username"
+            required
+            placeholder="usuario@esteticcarscr.com">
+        </div>
 
-<section id="administracion" class="hidden">
- <h1>Administración</h1>
- <p class="sub">Configuración general del sistema</p>
- <div class="panels">
-  <div class="card">
-   <h3>Sedes</h3>
-   <p>Escazú</p><p>Heredia</p>
+        <div class="field">
+          <label for="password">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            autocomplete="current-password"
+            required
+            placeholder="Ingresá tu contraseña">
+        </div>
+
+        <button id="loginButton"
+          type="submit" class="btn btn-full">
+          Iniciar sesión
+        </button>
+
+        <div id="loginMessage"
+          class="message" role="status"></div>
+      </form>
+
+    </div>
+
+    <div class="login-footer">
+      Estetic Cars CR — Sistema interno de calidad
+    </div>
   </div>
-  <div class="card">
-   <h3>Usuarios y perfiles</h3>
-   <p>Jefe de Operaciones</p>
-   <p>Jefe de Calidad</p>
-   <p>Servicio al Cliente</p>
-   <p>Jefe de Taller</p>
-  </div>
- </div>
-</section>
-</div>
-</main>
 </div>
 
-<script>
-"use strict";
+<!-- APLICACIÓN AUTENTICADA -->
 
-// DATOS EXCLUSIVAMENTE FICTICIOS
-const ejemplos=[
- {id:"CAL-DEMO-001",sede:"Escazú",tipo:"Reclamo",decision:"Aceptado",estado:"Cerrado",placa:"DEMO01",horas:8},
- {id:"CAL-DEMO-002",sede:"Heredia",tipo:"Garantía",decision:"Aceptado",estado:"En proceso",placa:"DEMO02",horas:5},
- {id:"CAL-DEMO-003",sede:"Escazú",tipo:"Reproceso",decision:"Aceptado",estado:"Cerrado",placa:"DEMO03",horas:4},
- {id:"CAL-DEMO-004",sede:"Heredia",tipo:"Reclamo",decision:"No aceptado",estado:"Cerrado",placa:"DEMO04",horas:0},
- {id:"CAL-DEMO-005",sede:"Escazú",tipo:"Reclamo",decision:"Parcialmente aceptado",estado:"En revisión",placa:"DEMO05",horas:3},
- {id:"CAL-DEMO-006",sede:"Escazú",tipo:"Garantía",decision:null,estado:"Registrado",placa:"DEMO06",horas:0}
+<div id="appScreen" class="app hidden">
+
+  <aside class="sidebar">
+
+    <div class="brand">
+      <small>ESTETIC CARS CR</small>
+      <h2>Gestión de Calidad</h2>
+    </div>
+
+    <nav class="menu">
+      <button data-view="dashboard" class="active">
+        ▦ Dashboard
+      </button>
+
+      <button data-view="registro">
+        ＋ Registrar incidencia
+      </button>
+
+      <button data-view="casos">
+        ☷ Control de casos
+      </button>
+
+      <button data-view="reportes">
+        ▥ Reportes y KPIs
+      </button>
+
+      <button data-view="administracion">
+        ⚙ Administración
+      </button>
+
+      <button data-view="perfil">
+        ◉ Mi perfil
+      </button>
+    </nav>
+
+  </aside>
+
+  <div class="main">
+
+    <div class="topbar">
+      <strong>Centro de Control de Calidad</strong>
+
+      <div class="user-info">
+        <span id="userDisplay"></span>
+        <button id="logoutButton" class="btn btn-light">
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="notice">
+        VERSIÓN 1.1 DE PRUEBAS:
+        El acceso utiliza Supabase Authentication.
+        Los indicadores visualizados son ficticios.
+        No se permite registrar datos reales todavía.
+      </div>
+
+      <!-- DASHBOARD -->
+
+      <section id="dashboard">
+
+        <h1>Dashboard Ejecutivo</h1>
+        <p class="subtitle">
+          Indicadores de calidad y reprocesos
+        </p>
+
+        <div class="metrics" id="metrics"></div>
+
+        <div class="panels">
+
+          <div class="card">
+            <h3>Incidencias por clasificación</h3>
+            <div id="chartTipos"></div>
+          </div>
+
+          <div class="card">
+            <h3>Decisiones técnicas</h3>
+            <div id="chartDecisiones"></div>
+          </div>
+
+          <div class="card">
+            <h3>Distribución por sede</h3>
+            <div id="chartSedes"></div>
+          </div>
+
+          <div class="card">
+            <h3>Indicadores económicos</h3>
+            <p>Horas demostrativas: <b>20</b></p>
+            <p>Valor equivalente:</p>
+            <h1>₡300.000</h1>
+            <p class="subtitle">
+              Referencia: ₡15.000 por hora
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- REGISTRO -->
+
+      <section id="registro" class="hidden">
+        <h1>Registrar incidencia</h1>
+        <p class="subtitle">
+          Reclamos, garantías y reprocesos
+        </p>
+
+        <div class="card">
+          <h3>Registro pendiente de habilitación</h3>
+          <p>
+            El formulario definitivo se conectará con
+            Supabase después de comprobar los permisos.
+          </p>
+          <span class="status">
+            Funcionalidad en desarrollo
+          </span>
+        </div>
+      </section>
+
+      <!-- CASOS -->
+
+      <section id="casos" class="hidden">
+        <h1>Control de casos</h1>
+        <p class="subtitle">
+          Seguimiento de expedientes
+        </p>
+
+        <div class="card">
+          <h3>Expedientes centralizados</h3>
+          <p>
+            La consulta de casos reales se habilitará
+            después de validar la seguridad por perfil.
+          </p>
+        </div>
+      </section>
+
+      <!-- REPORTES -->
+
+      <section id="reportes" class="hidden">
+        <h1>Reportes y KPIs</h1>
+        <p class="subtitle">
+          Análisis de gestión y resultados
+        </p>
+
+        <div class="card">
+          <h3>Dashboard gerencial avanzado</h3>
+          <p>
+            Próximamente: tendencias, tiempos,
+            técnicos, causas raíz, reincidencias
+            e impacto económico.
+          </p>
+        </div>
+      </section>
+
+      <!-- ADMINISTRACIÓN -->
+
+      <section id="administracion" class="hidden">
+        <h1>Administración</h1>
+        <p class="subtitle">
+          Configuración y control de usuarios
+        </p>
+
+        <div class="card">
+          <h3>Administración general</h3>
+          <p>
+            Disponible para Jefatura de Operaciones.
+            Las funciones de edición permanecerán
+            deshabilitadas hasta completar las pruebas.
+          </p>
+        </div>
+      </section>
+
+      <!-- PERFIL Y DIAGNÓSTICO -->
+
+      <section id="perfil" class="hidden">
+        <h1>Mi perfil</h1>
+        <p class="subtitle">
+          Identificación y verificación de acceso
+        </p>
+
+        <div class="card">
+          <h3>Datos del usuario</h3>
+
+          <table class="info-table">
+            <tr>
+              <td>Nombre</td>
+              <td id="profileName">—</td>
+            </tr>
+            <tr>
+              <td>Correo</td>
+              <td id="profileEmail">—</td>
+            </tr>
+            <tr>
+              <td>Perfil</td>
+              <td id="profileRole">—</td>
+            </tr>
+            <tr>
+              <td>Estado</td>
+              <td id="profileStatus">—</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top:20px">
+          <h3>Comprobación inicial de Supabase</h3>
+
+          <div class="test-row">
+            <span>Autenticación</span>
+            <span id="testAuth">Pendiente</span>
+          </div>
+
+          <div class="test-row">
+            <span>Perfil en la base de datos</span>
+            <span id="testProfile">Pendiente</span>
+          </div>
+
+          <div class="test-row">
+            <span>Identificación del puesto</span>
+            <span id="testRole">Pendiente</span>
+          </div>
+
+          <p class="subtitle" style="margin-top:20px">
+            Estas comprobaciones no sustituyen
+            las pruebas de permisos de escritura.
+          </p>
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+
+import { createClient } from
+"https://esm.sh/@supabase/supabase-js@2";
+
+/* CONFIGURACIÓN SUPABASE */
+
+const SUPABASE_URL =
+"https://plqtustbwfyyvotfnmmi.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_LPboivdqilTgHbeq721G3g_5gelR9A5";
+
+const supabase = createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+/* ESTADO */
+
+let usuarioActual = null;
+let perfilActual = null;
+
+const $ = id => document.getElementById(id);
+
+const perfilesPermitidos = [
+  "OPERACIONES",
+  "CALIDAD",
+  "SAC",
+  "TALLER"
 ];
 
-const formatCRC=n=>new Intl.NumberFormat("es-CR",{
- style:"currency",currency:"CRC",maximumFractionDigits:0
-}).format(n);
-
-const count=(arr,field,value)=>arr.filter(x=>x[field]===value).length;
-
-function tabla(arr){
- if(!arr.length)return '<div class="empty">No hay registros</div>';
- const rows=arr.map(x=>`
-  <tr><td>${x.id}</td><td>${x.placa}</td>
-  <td>${x.sede}</td><td>${x.tipo}</td>
-  <td>${x.decision||"Pendiente"}</td>
-  <td><span class="tag ${x.estado==="Cerrado"?"closed":"review"}">${x.estado}</span></td></tr>
- `).join("");
- return `<table><thead><tr><th>Expediente</th><th>Placa</th>
- <th>Sede</th><th>Tipo</th><th>Decisión</th><th>Estado</th>
- </tr></thead><tbody>${rows}</tbody></table>`;
+function mostrarLogin(mensaje = "") {
+  usuarioActual = null;
+  perfilActual = null;
+  $("appScreen").classList.add("hidden");
+  $("loginScreen").classList.remove("hidden");
+  $("loginMessage").textContent = mensaje;
 }
 
-function barras(id,items,total){
- document.getElementById(id).innerHTML=items.map((x,i)=>{
-  const pct=total?x[1]/total*100:0;
-  return `<div class="bar-row">
-   <div class="bar-label"><span>${x[0]}</span><b>${x[1]}</b></div>
-   <div class="track"><div class="fill ${i===1?"second":i===2?"third":""}"
-   style="width:${pct}%"></div></div></div>`;
- }).join("");
+function mostrarAplicacion() {
+  $("loginScreen").classList.add("hidden");
+  $("appScreen").classList.remove("hidden");
 }
 
-function render(){
- const sede=document.getElementById("sede").value;
- const data=ejemplos.filter(x=>sede==="Todas"||x.sede===sede);
- const horas=data.reduce((s,x)=>s+x.horas,0);
- const aceptados=count(data,"decision","Aceptado");
- const parciales=count(data,"decision","Parcialmente aceptado");
- const abiertos=data.filter(x=>x.estado!=="Cerrado").length;
- const metricas=[
-  ["Incidencias recibidas",data.length,"Total de casos"],
-  ["Aceptados",aceptados,"Aceptación completa"],
-  ["Parcialmente aceptados",parciales,"Aceptación parcial"],
-  ["Casos abiertos",abiertos,"Pendientes de cierre"],
-  ["Horas de reproceso",horas.toLocaleString("es-CR"),"Horas de demostración"],
-  ["Impacto equivalente",formatCRC(horas*15000),"Tarifa: ₡15.000/h"],
-  ["Casos cerrados",count(data,"estado","Cerrado"),"Expedientes concluidos"],
-  ["Sin evaluar",data.filter(x=>!x.decision).length,"Pendientes de decisión"]
- ];
- document.getElementById("metricas").innerHTML=metricas.map(m=>
-  `<div class="card"><div class="label">${m[0]}</div>
-   <div class="number">${m[1]}</div><div class="foot">${m[2]}</div></div>`
- ).join("");
- barras("clasificacion",["Reclamo","Garantía","Reproceso"].map(x=>[x,count(data,"tipo",x)]),data.length);
- barras("decisiones",[
-  ["Aceptado",aceptados],["Parcialmente aceptado",parciales],
-  ["No aceptado",count(data,"decision","No aceptado")],
-  ["Pendiente",data.filter(x=>!x.decision).length]
- ],data.length);
- barras("sedes",["Escazú","Heredia"].map(x=>[x,count(data,"sede",x)]),data.length);
- document.getElementById("indicadores").innerHTML=
- `<p>Total de horas registradas: <b>${horas}</b></p>
-  <p>Valor económico equivalente: <b>${formatCRC(horas*15000)}</b></p>
-  <p>Casos pendientes de cierre: <b>${abiertos}</b></p>`;
- document.getElementById("recientes").innerHTML=tabla(data);
- barras("reporteAceptacion",[
-  ["Reclamos recibidos",count(data,"tipo","Reclamo")],
-  ["Aceptados",data.filter(x=>x.tipo==="Reclamo"&&x.decision==="Aceptado").length],
-  ["Parcialmente aceptados",data.filter(x=>x.tipo==="Reclamo"&&x.decision==="Parcialmente aceptado").length]
- ],data.length);
- document.getElementById("reporteHoras").innerHTML=
- `<p><b>${horas}</b> horas registradas</p>
-  <h2 style="color:#07549a">${formatCRC(horas*15000)}</h2>
-  <p class="sub">Valor de venta equivalente; no representa costo contable.</p>`;
- renderCasos();
+function cambiarVista(nombre) {
+  document.querySelectorAll(".content section")
+    .forEach(s => s.classList.add("hidden"));
+
+  $(nombre).classList.remove("hidden");
+
+  document.querySelectorAll(".menu button")
+    .forEach(b => {
+      b.classList.toggle(
+        "active",
+        b.dataset.view === nombre
+      );
+    });
 }
 
-function renderCasos(){
- const q=document.getElementById("buscar").value.toUpperCase();
- const estado=document.getElementById("filtroEstado").value;
- const data=ejemplos.filter(x=>
-  (x.id.includes(q)||x.placa.includes(q))&&(!estado||x.estado===estado)
- );
- document.getElementById("listado").innerHTML=tabla(data);
+/* IDENTIFICACIÓN DE PERFIL */
+
+async function cargarPerfil(user) {
+
+  const { data, error } = await supabase
+    .from("usuarios")
+    .select(`
+      nombre,
+      activo,
+      perfiles (
+        codigo,
+        nombre,
+        activo
+      )
+    `)
+    .eq("id", user.id)
+    .single();
+
+  if (error || !data) {
+    throw new Error(
+      "No fue posible consultar el perfil autorizado."
+    );
+  }
+
+  const perfil = data.perfiles;
+
+  if (
+    !data.activo ||
+    !perfil ||
+    !perfil.activo ||
+    !perfilesPermitidos.includes(perfil.codigo)
+  ) {
+    throw new Error(
+      "La cuenta no tiene un perfil activo autorizado."
+    );
+  }
+
+  return {
+    nombre: data.nombre,
+    codigo: perfil.codigo,
+    puesto: perfil.nombre
+  };
 }
 
-function mostrar(view){
- document.querySelectorAll("main section").forEach(x=>x.classList.add("hidden"));
- document.getElementById(view).classList.remove("hidden");
- document.querySelectorAll(".menu button").forEach(x=>
-  x.classList.toggle("active",x.dataset.view===view));
- window.scrollTo(0,0);
+/* ABRIR SESIÓN */
+
+async function activarSesion(user) {
+
+  const perfil = await cargarPerfil(user);
+
+  usuarioActual = user;
+  perfilActual = perfil;
+
+  $("userDisplay").textContent =
+    perfil.nombre + " · " + perfil.puesto;
+
+  $("profileName").textContent = perfil.nombre;
+  $("profileEmail").textContent = user.email;
+  $("profileRole").textContent = perfil.puesto;
+  $("profileStatus").textContent = "Activo";
+
+  $("testAuth").textContent = "Correcto";
+  $("testProfile").textContent = "Correcto";
+  $("testRole").textContent = perfil.codigo;
+
+  /* CONTROL VISUAL DEL MENÚ */
+
+  const menuDashboard =
+    document.querySelector('[data-view="dashboard"]');
+
+  const menuReportes =
+    document.querySelector('[data-view="reportes"]');
+
+  const menuAdmin =
+    document.querySelector('[data-view="administracion"]');
+
+  const puedeVerGerencia =
+    ["OPERACIONES", "CALIDAD"].includes(perfil.codigo);
+
+  menuDashboard.classList.toggle(
+    "hidden", !puedeVerGerencia
+  );
+
+  menuReportes.classList.toggle(
+    "hidden", !puedeVerGerencia
+  );
+
+  menuAdmin.classList.toggle(
+    "hidden", perfil.codigo !== "OPERACIONES"
+  );
+
+  mostrarAplicacion();
+
+  cambiarVista(
+    puedeVerGerencia ? "dashboard" : "perfil"
+  );
 }
 
-document.querySelectorAll("[data-view]").forEach(btn=>
- btn.addEventListener("click",()=>mostrar(btn.dataset.view)));
+/* INICIAR SESIÓN */
 
-document.getElementById("sede").addEventListener("change",render);
-document.getElementById("buscar").addEventListener("input",renderCasos);
-document.getElementById("filtroEstado").addEventListener("change",renderCasos);
+$("loginForm").addEventListener(
+  "submit",
+  async event => {
 
-document.getElementById("cliente").addEventListener("change",e=>{
- const campo=document.getElementById("aseguradora");
- campo.disabled=e.target.value!=="Aseguradora";
- campo.required=!campo.disabled;
- if(campo.disabled)campo.value="";
-});
+    event.preventDefault();
 
-document.getElementById("fecha").valueAsDate=new Date();
+    const boton = $("loginButton");
+    const correo = $("email").value.trim();
+    const clave = $("password").value;
 
-document.getElementById("formulario").addEventListener("submit",e=>{
- e.preventDefault();
- alert("Formulario de demostración validado. No se guardaron datos. La conexión segura con Supabase se incorporará después.");
-});
+    boton.disabled = true;
+    boton.textContent = "Verificando acceso...";
+    $("loginMessage").textContent = "";
 
-render();
+    try {
+
+      const { data, error } =
+        await supabase.auth.signInWithPassword({
+          email: correo,
+          password: clave
+        });
+
+      if (error) {
+        throw new Error(
+          "No fue posible iniciar sesión. Verificá tus credenciales."
+        );
+      }
+
+      await activarSesion(data.user);
+
+      $("password").value = "";
+
+    } catch (error) {
+
+      await supabase.auth.signOut();
+
+      mostrarLogin(error.message);
+
+    } finally {
+
+      boton.disabled = false;
+      boton.textContent = "Iniciar sesión";
+
+    }
+  }
+);
+
+/* CERRAR SESIÓN */
+
+$("logoutButton").addEventListener(
+  "click",
+  async () => {
+    await supabase.auth.signOut();
+    mostrarLogin();
+    $("password").value = "";
+  }
+);
+
+/* NAVEGACIÓN */
+
+document.querySelectorAll("[data-view]")
+  .forEach(boton => {
+
+    boton.addEventListener("click", () => {
+      if (!perfilActual) return;
+
+      const vista = boton.dataset.view;
+
+      if (
+        ["dashboard", "reportes"].includes(vista) &&
+        !["OPERACIONES", "CALIDAD"]
+          .includes(perfilActual.codigo)
+      ) return;
+
+      if (
+        vista === "administracion" &&
+        perfilActual.codigo !== "OPERACIONES"
+      ) return;
+
+      cambiarVista(vista);
+    });
+
+  });
+
+/* DASHBOARD DE DEMOSTRACIÓN */
+
+const indicadores = [
+  ["Incidencias recibidas", "6", "Registros ficticios"],
+  ["Aceptados", "3", "Aceptación completa"],
+  ["Parcialmente aceptados", "1", "Aceptación parcial"],
+  ["Casos abiertos", "3", "Pendientes"],
+  ["Horas de reproceso", "20", "Horas ficticias"],
+  ["Impacto equivalente", "₡300.000", "₡15.000/h"],
+  ["Casos cerrados", "3", "Expedientes concluidos"],
+  ["Sin evaluar", "1", "Pendiente de decisión"]
+];
+
+$("metrics").innerHTML = indicadores.map(
+  item => `
+    <div class="card">
+      <div class="metric-label">${item[0]}</div>
+      <div class="metric-value">${item[1]}</div>
+      <div class="metric-foot">${item[2]}</div>
+    </div>
+  `
+).join("");
+
+function dibujarBarras(id, items) {
+
+  const max = Math.max(
+    ...items.map(item => item[1]), 1
+  );
+
+  $(id).innerHTML = items.map(
+    item => `
+      <div class="bar-item">
+        <div class="bar-top">
+          <span>${item[0]}</span>
+          <strong>${item[1]}</strong>
+        </div>
+        <div class="track">
+          <div class="fill"
+            style="width:${item[1] / max * 100}%">
+          </div>
+        </div>
+      </div>
+    `
+  ).join("");
+}
+
+dibujarBarras("chartTipos", [
+  ["Reclamos", 3],
+  ["Garantías", 2],
+  ["Reprocesos", 1]
+]);
+
+dibujarBarras("chartDecisiones", [
+  ["Aceptados", 3],
+  ["Parcialmente aceptados", 1],
+  ["No aceptados", 1],
+  ["Pendientes", 1]
+]);
+
+dibujarBarras("chartSedes", [
+  ["Escazú", 4],
+  ["Heredia", 2]
+]);
+
+/* RESTAURAR SESIÓN EXISTENTE */
+
+async function iniciar() {
+
+  $("loginMessage").textContent =
+    "Comprobando sesión...";
+
+  try {
+
+    const { data, error } =
+      await supabase.auth.getUser();
+
+    if (error || !data.user) {
+      mostrarLogin();
+      return;
+    }
+
+    await activarSesion(data.user);
+
+  } catch (error) {
+
+    await supabase.auth.signOut();
+    mostrarLogin(
+      "La sesión no pudo verificarse. Iniciá sesión nuevamente."
+    );
+
+  }
+}
+
+iniciar();
+
 </script>
 </body>
 </html>
