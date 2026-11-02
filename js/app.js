@@ -1,24 +1,38 @@
 
 /*
  * ESTETIC CARS CR
- * GESTIÓN DE CALIDAD
- * Versión 1.2
+ * SISTEMA DE GESTIÓN DE CALIDAD
  *
- * Módulo principal:
- * - Autenticación
- * - Perfiles
- * - Catálogos
+ * Archivo: js/app.js
+ * Versión: 1.4.3
+ *
+ * Funcionalidades:
+ * - Autenticación Supabase
+ * - Control de perfiles
+ * - Gestión de navegación
  * - Registro de incidencias
- * - Consulta y filtros
- * - Dashboard preliminar
+ * - Consulta de expedientes
+ * - Filtros y paginación
+ * - Dashboard mensual automático
+ * - Integración Gestión Técnica
  */
+
+/* ==========================================
+   MÓDULOS DEL SISTEMA
+========================================== */
+
 import "./calidad.js";
 import "./dashboard.js";
+
 import {
   supabase,
   CONFIG,
   PERFILES
 } from "./config.js";
+
+/* ==========================================
+   VARIABLES GENERALES
+========================================== */
 
 const $ = id => document.getElementById(id);
 
@@ -40,16 +54,17 @@ const ROLES_GERENCIA = [
   PERFILES.CALIDAD
 ];
 
-/* ==================================
+/* ==========================================
    FUNCIONES GENERALES
-================================== */
+========================================== */
 
 function texto(valor) {
   return String(valor ?? "").trim();
 }
 
 function numero(valor) {
-  if (valor === "" || valor == null) {
+  if (valor === "" || valor === null ||
+      valor === undefined) {
     return null;
   }
 
@@ -63,9 +78,20 @@ function numero(valor) {
 function informar(id, contenido, correcto = false) {
   const elemento = $(id);
 
+  if (!elemento) return;
+
   elemento.textContent = contenido;
+
   elemento.className =
     "feedback " + (correcto ? "ok" : "fail");
+}
+
+function aplicarVisibilidad(selector, visible) {
+  const elemento = document.querySelector(selector);
+
+  if (!elemento) return;
+
+  elemento.classList.toggle("hidden", !visible);
 }
 
 function limpiarSesionVisual(mensaje = "") {
@@ -78,17 +104,27 @@ function limpiarSesionVisual(mensaje = "") {
   $("loginError").textContent = mensaje;
 }
 
-function aplicarVisibilidad(selector, visible) {
-  const elemento = document.querySelector(selector);
+/* ==========================================
+   ORDEN DEL MENÚ
+========================================== */
 
-  if (elemento) {
-    elemento.classList.toggle("hidden", !visible);
+function ordenarMenu() {
+  const menu = document.getElementById("menu");
+
+  if (!menu) return;
+
+  const miPerfil = menu.querySelector(
+    '[data-page="perfil"]'
+  );
+
+  if (miPerfil) {
+    menu.appendChild(miPerfil);
   }
 }
 
-/* ==================================
+/* ==========================================
    NAVEGACIÓN
-================================== */
+========================================== */
 
 function cambiarPagina(nombre) {
   const boton = document.querySelector(
@@ -107,7 +143,11 @@ function cambiarPagina(nombre) {
       seccion.classList.add("hidden");
     });
 
-  $(nombre).classList.remove("hidden");
+  const seccion = $(nombre);
+
+  if (!seccion) return;
+
+  seccion.classList.remove("hidden");
 
   document.querySelectorAll("[data-page]")
     .forEach(elemento => {
@@ -118,17 +158,34 @@ function cambiarPagina(nombre) {
     });
 
   if (nombre === "casos") {
+    pagina = 0;
     consultarCasos();
   }
 
+  /*
+   * IMPORTANTE:
+   * El dashboard V1.4 administra sus propias
+   * consultas mediante este evento.
+   *
+   * No llamamos al dashboard antiguo.
+   */
+
   if (nombre === "dashboard") {
-    cargarDashboard();
+    document.dispatchEvent(
+      new CustomEvent("ec:dashboard-visible")
+    );
   }
+
+  /*
+   * Mantener Mi perfil al final.
+   */
+
+  ordenarMenu();
 }
 
-/* ==================================
-   CATÁLOGOS
-================================== */
+/* ==========================================
+   CATÁLOGOS DE SUPABASE
+========================================== */
 
 function obtenerLista(nombre) {
   const datos = catalogos?.[nombre];
@@ -146,23 +203,28 @@ function llenarSelect(
 ) {
   const select = $(id);
 
+  if (!select) return;
+
   select.replaceChildren();
 
-  const inicial = document.createElement("option");
+  const opcionInicial =
+    document.createElement("option");
 
-  inicial.value = "";
-  inicial.textContent = titulo;
+  opcionInicial.value = "";
+  opcionInicial.textContent = titulo;
 
-  select.append(inicial);
+  select.append(opcionInicial);
 
   for (const elemento of elementos ?? []) {
     if (elemento.activo === false) {
       continue;
     }
 
-    const opcion = document.createElement("option");
+    const opcion =
+      document.createElement("option");
 
     opcion.value = String(elemento.id);
+
     opcion.textContent =
       elemento.nombre ??
       elemento.descripcion ??
@@ -186,7 +248,7 @@ async function cargarCatalogos() {
 
   if (error) {
     throw new Error(
-      "No se pudieron cargar los catálogos: " +
+      "No se pudieron consultar los catálogos: " +
       error.message
     );
   }
@@ -216,9 +278,9 @@ async function cargarCatalogos() {
   );
 }
 
-/* ==================================
+/* ==========================================
    CLIENTES Y ASEGURADORAS
-================================== */
+========================================== */
 
 function actualizarTipoCliente() {
   const requiereAseguradora =
@@ -229,16 +291,17 @@ function actualizarTipoCliente() {
     !requiereAseguradora
   );
 
-  $("aseguradora").required = requiereAseguradora;
+  $("aseguradora").required =
+    requiereAseguradora;
 
   if (!requiereAseguradora) {
     $("aseguradora").value = "";
   }
 }
 
-/* ==================================
-   PERFIL DEL USUARIO
-================================== */
+/* ==========================================
+   CONSULTAR PERFIL DEL USUARIO
+========================================== */
 
 async function obtenerPerfil(user) {
   const { data, error } = await supabase
@@ -257,7 +320,7 @@ async function obtenerPerfil(user) {
 
   if (error || !data) {
     throw new Error(
-      "No se pudo consultar el perfil autorizado."
+      "No fue posible consultar el perfil autorizado."
     );
   }
 
@@ -267,26 +330,28 @@ async function obtenerPerfil(user) {
     !data.perfiles.activo
   ) {
     throw new Error(
-      "La cuenta no dispone de un perfil activo."
+      "El usuario no tiene un perfil activo."
     );
   }
 
   const codigo = data.perfiles.codigo;
 
-  const permitidos = Object.values(PERFILES);
-
-  if (!permitidos.includes(codigo)) {
+  if (!Object.values(PERFILES).includes(codigo)) {
     throw new Error(
-      "El perfil de usuario no está autorizado."
+      "Perfil no autorizado para ingresar."
     );
   }
 
   return {
     nombre: data.nombre,
-    codigo,
+    codigo: codigo,
     puesto: data.perfiles.nombre
   };
 }
+
+/* ==========================================
+   ACTIVAR SESIÓN
+========================================== */
 
 async function activarSesion(user) {
   const perfilConsultado =
@@ -328,6 +393,7 @@ async function activarSesion(user) {
 
   try {
     await cargarCatalogos();
+
   } catch (error) {
     console.error(error);
 
@@ -337,6 +403,21 @@ async function activarSesion(user) {
     );
   }
 
+  /*
+   * Ajustar orden del menú antes
+   * de mostrar la primera sección.
+   */
+
+  ordenarMenu();
+
+  /*
+   * OPERACIONES y CALIDAD:
+   * Abren directamente en Dashboard.
+   *
+   * SAC y TALLER:
+   * Abren en Control de casos.
+   */
+
   cambiarPagina(
     puedeVerDashboard
       ? "dashboard"
@@ -344,9 +425,9 @@ async function activarSesion(user) {
   );
 }
 
-/* ==================================
+/* ==========================================
    INICIO DE SESIÓN
-================================== */
+========================================== */
 
 $("loginForm").addEventListener(
   "submit",
@@ -371,6 +452,12 @@ $("loginForm").addEventListener(
         throw error;
       }
 
+      if (!data.user) {
+        throw new Error(
+          "Supabase no devolvió un usuario válido."
+        );
+      }
+
       await activarSesion(data.user);
 
       $("clave").value = "";
@@ -390,9 +477,9 @@ $("loginForm").addEventListener(
   }
 );
 
-/* ==================================
+/* ==========================================
    CIERRE DE SESIÓN
-================================== */
+========================================== */
 
 $("btnLogout").addEventListener(
   "click",
@@ -402,7 +489,7 @@ $("btnLogout").addEventListener(
 
     if (error) {
       alert(
-        "No fue posible cerrar la sesión: " +
+        "No fue posible cerrar sesión: " +
         error.message
       );
 
@@ -414,32 +501,46 @@ $("btnLogout").addEventListener(
   }
 );
 
-/* ==================================
-   MENÚ DE NAVEGACIÓN
-================================== */
+/* ==========================================
+   EVENTOS DEL MENÚ
+========================================== */
 
-document.querySelectorAll("[data-page]")
-  .forEach(boton => {
-    boton.addEventListener("click", () => {
-      if (
-        !perfil ||
-        boton.classList.contains("hidden")
-      ) {
-        return;
-      }
+/*
+ * Se utiliza delegación de eventos
+ * para permitir nuevos módulos dinámicos,
+ * como Gestión Técnica.
+ */
 
-      cambiarPagina(boton.dataset.page);
-    });
-  });
+document.getElementById("menu")
+  .addEventListener("click", evento => {
+    const boton = evento.target.closest(
+      "[data-page]"
+    );
+
+    if (
+      !boton ||
+      !perfil ||
+      boton.classList.contains("hidden")
+    ) {
+      return;
+    }
+
+    cambiarPagina(boton.dataset.page);
+  }
+);
+
+/* ==========================================
+   ACTUALIZAR TIPO DE CLIENTE
+========================================== */
 
 $("tipoCliente").addEventListener(
   "change",
   actualizarTipoCliente
 );
 
-/* ==================================
+/* ==========================================
    REGISTRO DE INCIDENCIAS
-================================== */
+========================================== */
 
 $("formIncidencia").addEventListener(
   "submit",
@@ -536,13 +637,11 @@ $("formIncidencia").addEventListener(
 
       if (data == null) {
         throw new Error(
-          "La función no devolvió el ID del expediente."
+          "La función no devolvió el identificador."
         );
       }
 
       const idRegistrado = data;
-
-      /* CONSULTAR CONSECUTIVO ASIGNADO */
 
       const respuesta = await supabase
         .from("incidencias")
@@ -556,7 +655,6 @@ $("formIncidencia").addEventListener(
           : null;
 
       $("formIncidencia").reset();
-
       actualizarTipoCliente();
 
       informar(
@@ -580,16 +678,15 @@ $("formIncidencia").addEventListener(
 
     } finally {
       boton.disabled = false;
-
       boton.textContent =
         "Registrar incidencia";
     }
   }
 );
 
-/* ==================================
-   CONTROL Y CONSULTA DE CASOS
-================================== */
+/* ==========================================
+   CONSULTA DE EXPEDIENTES
+========================================== */
 
 async function consultarCasos() {
   if (!usuario) {
@@ -673,8 +770,7 @@ async function consultarCasos() {
     return;
   }
 
-  const total =
-    count ?? 0;
+  const total = count ?? 0;
 
   const paginas =
     Math.max(
@@ -754,15 +850,15 @@ async function consultarCasos() {
   informar(
     "casosMensaje",
     total === 0
-      ? "No existen expedientes para los filtros seleccionados."
+      ? "No existen expedientes para estos filtros."
       : "Consulta completada correctamente.",
     true
   );
 }
 
-/* ==================================
+/* ==========================================
    FILTROS Y PAGINACIÓN
-================================== */
+========================================== */
 
 $("btnBuscar").addEventListener(
   "click",
@@ -790,120 +886,13 @@ $("btnSiguiente").addEventListener(
   }
 );
 
-/* ==================================
-   DASHBOARD PRELIMINAR
-================================== */
-
-async function cargarDashboard() {
-  if (
-    !perfil ||
-    !ROLES_GERENCIA.includes(perfil.codigo)
-  ) {
-    return;
-  }
-
-  const contenedor =
-    $("resumen");
-
-  contenedor.textContent =
-    "Consultando indicadores...";
-
-  const { data, error } =
-    await supabase
-      .from("incidencias")
-      .select(
-        "id,estado,tipo_incidencia"
-      )
-      .limit(1000);
-
-  if (error) {
-    contenedor.textContent =
-      "Error al cargar los indicadores: " +
-      error.message;
-
-    return;
-  }
-
-  const registros =
-    data ?? [];
-
-  const indicadores = [
-    [
-      "Incidencias consultadas",
-      registros.length
-    ],
-    [
-      "Reclamos",
-      registros.filter(
-        r => r.tipo_incidencia === "Reclamo"
-      ).length
-    ],
-    [
-      "Garantías",
-      registros.filter(
-        r => r.tipo_incidencia === "Garantía"
-      ).length
-    ],
-    [
-      "Reprocesos",
-      registros.filter(
-        r => r.tipo_incidencia === "Reproceso"
-      ).length
-    ]
-  ];
-
-  contenedor.replaceChildren();
-
-  for (const [nombre, valor] of indicadores) {
-    const tarjeta =
-      document.createElement("div");
-
-    tarjeta.className = "metric";
-
-    const etiqueta =
-      document.createElement("span");
-
-    etiqueta.textContent = nombre;
-
-    const cifra =
-      document.createElement("strong");
-
-    cifra.textContent =
-      String(valor);
-
-    tarjeta.append(
-      etiqueta,
-      cifra
-    );
-
-    contenedor.append(tarjeta);
-  }
-
-  if (registros.length === 1000) {
-    const aviso =
-      document.createElement("p");
-
-    aviso.className = "muted";
-
-    aviso.textContent =
-      "Vista preliminar limitada a 1.000 registros. " +
-      "No utilizar como total gerencial.";
-
-    contenedor.append(aviso);
-  }
-}
-
-$("btnActualizar").addEventListener(
-  "click",
-  cargarDashboard
-);
-
-/* ==================================
-   RECUPERACIÓN DE SESIÓN
-================================== */
+/* ==========================================
+   INICIALIZACIÓN
+========================================== */
 
 async function iniciarAplicacion() {
   actualizarTipoCliente();
+  ordenarMenu();
 
   try {
     const { data, error } =
@@ -927,7 +916,5 @@ async function iniciarAplicacion() {
     );
   }
 }
-
-/* INICIALIZACIÓN */
 
 iniciarAplicacion();
