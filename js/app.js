@@ -12,7 +12,7 @@
  * - Consulta y filtros
  * - Dashboard preliminar
  */
-
+import "./calidad.js";
 import {
   supabase,
   CONFIG,
