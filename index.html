@@ -2,999 +2,244 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Estetic Cars | Gestión de Calidad</title>
-
-<style>
-:root {
-  --azul:#07549a;
-  --azulOscuro:#073c70;
-  --fondo:#f2f6fb;
-  --texto:#203247;
-  --gris:#718096;
-  --borde:#dfe8f1;
-  --verde:#147a52;
-}
-
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:var(--fondo);
-  color:var(--texto);
-}
-
-button,input{font:inherit}
-button{cursor:pointer}
-
-.hidden{display:none!important}
-
-/* ACCESO */
-
-.login-screen{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  background:linear-gradient(140deg,#062f59,#0968af);
-}
-
-.login-card{
-  width:100%;
-  max-width:410px;
-  background:white;
-  border-radius:17px;
-  padding:35px;
-  box-shadow:0 18px 50px #001b3450;
-}
-
-.login-logo{
-  width:58px;height:58px;
-  display:grid;place-items:center;
-  border-radius:15px;
-  background:#e8f1fc;
-  color:var(--azul);
-  font-size:30px;
-  margin-bottom:20px;
-}
-
-.login-card h1{
-  font-size:24px;
-  margin:0 0 8px;
-  color:var(--azulOscuro);
-}
-
-.login-card p{
-  color:var(--gris);
-  font-size:13px;
-  line-height:1.6;
-  margin-bottom:25px;
-}
-
-.field{margin-bottom:18px}
-
-.field label{
-  display:block;
-  font-size:13px;
-  font-weight:bold;
-  margin-bottom:8px;
-}
-
-.field input{
-  width:100%;
-  padding:13px;
-  border:1px solid var(--borde);
-  border-radius:8px;
-  outline:none;
-}
-
-.field input:focus{
-  border-color:var(--azul);
-}
-
-.btn{
-  border:0;
-  background:var(--azul);
-  color:white;
-  padding:12px 18px;
-  border-radius:8px;
-  font-weight:bold;
-}
-
-.btn:disabled{opacity:.6;cursor:wait}
-.btn-light{background:#e5eff9;color:var(--azul)}
-
-.btn-full{width:100%}
-
-.message{
-  font-size:13px;
-  line-height:1.5;
-  margin-top:17px;
-  color:#a63333;
-  min-height:18px;
-}
-
-.login-footer{
-  color:#a9bed3;
-  font-size:11px;
-  text-align:center;
-  margin-top:22px;
-}
-
-/* APLICACIÓN */
-
-.app{display:flex;min-height:100vh}
-
-.sidebar{
-  width:245px;
-  flex-shrink:0;
-  background:var(--azulOscuro);
-  color:white;
-  padding:25px 15px;
-}
-
-.brand{
-  padding:8px 10px 24px;
-  border-bottom:1px solid #ffffff30;
-}
-
-.brand small{
-  font-size:11px;
-  color:#b5d3ec;
-  letter-spacing:1px;
-}
-
-.brand h2{
-  font-size:19px;
-  margin:8px 0 0;
-}
-
-.menu{
-  display:grid;
-  gap:7px;
-  margin-top:24px;
-}
-
-.menu button{
-  background:none;
-  color:#d4e4f5;
-  border:0;
-  border-radius:8px;
-  padding:13px;
-  text-align:left;
-  width:100%;
-}
-
-.menu button.active,
-.menu button:hover{
-  background:#ffffff22;
-  color:white;
-}
-
-.main{
-  flex:1;
-  min-width:0;
-}
-
-.topbar{
-  background:white;
-  padding:18px 28px;
-  display:flex;
-  gap:15px;
-  align-items:center;
-  justify-content:space-between;
-  border-bottom:1px solid var(--borde);
-}
-
-.topbar strong{color:var(--azulOscuro)}
-
-.user-info{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-}
-
-.user-info span{
-  color:var(--gris);
-  font-size:12px;
-}
-
-.content{
-  max-width:1450px;
-  margin:auto;
-  padding:30px;
-}
-
-h1{
-  font-size:26px;
-  margin:0 0 7px;
-  color:var(--azulOscuro);
-}
-
-h3{
-  font-size:16px;
-  color:var(--azulOscuro);
-  margin:0 0 17px;
-}
-
-.subtitle{
-  color:var(--gris);
-  font-size:13px;
-  margin:0 0 24px;
-}
-
-.notice{
-  background:#fff5df;
-  border:1px solid #ecd7a5;
-  color:#775a18;
-  border-radius:9px;
-  padding:14px;
-  font-size:13px;
-  line-height:1.5;
-  margin-bottom:25px;
-}
-
-.metrics{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:17px;
-  margin-bottom:22px;
-}
-
-.card{
-  background:white;
-  border:1px solid var(--borde);
-  border-radius:12px;
-  padding:22px;
-  box-shadow:0 3px 12px #143d6410;
-}
-
-.metric-label{
-  font-size:12px;
-  color:var(--gris);
-}
-
-.metric-value{
-  font-size:30px;
-  color:var(--azulOscuro);
-  font-weight:bold;
-  margin-top:15px;
-}
-
-.metric-foot{
-  color:var(--gris);
-  font-size:12px;
-  margin-top:8px;
-}
-
-.panels{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-  margin-bottom:22px;
-}
-
-.bar-item{margin-bottom:19px}
-
-.bar-top{
-  display:flex;
-  justify-content:space-between;
-  font-size:13px;
-  margin-bottom:8px;
-}
-
-.track{
-  background:#e5edf5;
-  height:10px;
-  border-radius:20px;
-  overflow:hidden;
-}
-
-.fill{
-  background:#2479bf;
-  height:100%;
-  border-radius:20px;
-}
-
-.status{
-  display:inline-block;
-  background:#e3f3e9;
-  color:var(--verde);
-  padding:7px 11px;
-  border-radius:7px;
-  font-size:12px;
-  font-weight:bold;
-}
-
-.test-row{
-  border-bottom:1px solid var(--borde);
-  padding:13px 0;
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  align-items:center;
-}
-
-.test-row:last-child{border:0}
-
-.test-row span{
-  font-size:13px;
-}
-
-.info-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-.info-table td{
-  padding:13px;
-  border-bottom:1px solid var(--borde);
-  font-size:13px;
-}
-
-.info-table td:last-child{
-  text-align:right;
-  font-weight:bold;
-}
-
-@media(max-width:950px){
-  .metrics{grid-template-columns:repeat(2,1fr)}
-  .panels{grid-template-columns:1fr}
-  .sidebar{width:195px}
-}
-
-@media(max-width:650px){
-  .app{display:block}
-  .sidebar{width:100%;padding:13px}
-  .brand{padding:5px 8px}
-  .menu{
-    display:flex;
-    overflow-x:auto;
-    margin-top:12px;
-  }
-  .menu button{white-space:nowrap;width:auto}
-  .topbar{padding:14px;flex-wrap:wrap}
-  .content{padding:17px}
-  .card{padding:16px}
-  .metric-value{font-size:25px}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estetic Cars | Gestión de Calidad V1.2</title>
+  <link rel="stylesheet" href="./css/styles.css">
 </head>
-
 <body>
 
-<!-- PANTALLA DE ACCESO -->
-
-<div id="loginScreen" class="login-screen">
-  <div>
-    <div class="login-card">
-
-      <div class="login-logo">✓</div>
-
+  <section id="login" class="login-screen">
+    <form id="loginForm" class="login-card">
+      <div class="logo">EC</div>
       <h1>Estetic Cars CR</h1>
-      <p>
-        Gestión de Calidad<br>
-        Plataforma de reclamos, garantías y reprocesos.
-      </p>
+      <p>Plataforma de Gestión de Calidad</p>
 
-      <form id="loginForm">
-        <div class="field">
-          <label for="email">Correo empresarial</label>
-          <input
-            type="email"
-            id="email"
-            autocomplete="username"
-            required
-            placeholder="usuario@esteticcarscr.com">
+      <label for="correo">Correo empresarial</label>
+      <input id="correo" type="email"
+             autocomplete="username" required>
+
+      <label for="clave">Contraseña</label>
+      <input id="clave" type="password"
+             autocomplete="current-password" required>
+
+      <button id="btnLogin" class="primary" type="submit">
+        Iniciar sesión
+      </button>
+
+      <p id="loginError" class="error" role="alert"></p>
+    </form>
+  </section>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand">
+        <small>ESTETIC CARS CR</small>
+        <h2>Gestión de Calidad</h2>
+        <span>Versión 1.2</span>
+      </div>
+
+      <nav id="menu">
+        <button data-page="dashboard">Dashboard</button>
+        <button data-page="registro">Registrar incidencia</button>
+        <button data-page="casos">Control de casos</button>
+        <button data-page="perfil">Mi perfil</button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <strong>Centro de Control de Calidad</strong>
+          <small id="usuarioActual"></small>
         </div>
-
-        <div class="field">
-          <label for="password">Contraseña</label>
-          <input
-            type="password"
-            id="password"
-            autocomplete="current-password"
-            required
-            placeholder="Ingresá tu contraseña">
-        </div>
-
-        <button id="loginButton"
-          type="submit" class="btn btn-full">
-          Iniciar sesión
-        </button>
-
-        <div id="loginMessage"
-          class="message" role="status"></div>
-      </form>
-
-    </div>
-
-    <div class="login-footer">
-      Estetic Cars CR — Sistema interno de calidad
-    </div>
-  </div>
-</div>
-
-<!-- APLICACIÓN AUTENTICADA -->
-
-<div id="appScreen" class="app hidden">
-
-  <aside class="sidebar">
-
-    <div class="brand">
-      <small>ESTETIC CARS CR</small>
-      <h2>Gestión de Calidad</h2>
-    </div>
-
-    <nav class="menu">
-      <button data-view="dashboard" class="active">
-        ▦ Dashboard
-      </button>
-
-      <button data-view="registro">
-        ＋ Registrar incidencia
-      </button>
-
-      <button data-view="casos">
-        ☷ Control de casos
-      </button>
-
-      <button data-view="reportes">
-        ▥ Reportes y KPIs
-      </button>
-
-      <button data-view="administracion">
-        ⚙ Administración
-      </button>
-
-      <button data-view="perfil">
-        ◉ Mi perfil
-      </button>
-    </nav>
-
-  </aside>
-
-  <div class="main">
-
-    <div class="topbar">
-      <strong>Centro de Control de Calidad</strong>
-
-      <div class="user-info">
-        <span id="userDisplay"></span>
-        <button id="logoutButton" class="btn btn-light">
+        <button id="btnLogout" class="secondary">
           Cerrar sesión
         </button>
-      </div>
-    </div>
+      </header>
 
-    <div class="content">
+      <div class="content">
+        <div class="notice">
+          V1.2 — Etapa de pruebas.
+          Utilizar solamente expedientes ficticios.
+          Las evidencias y las evaluaciones técnicas
+          todavía no están habilitadas.
+        </div>
 
-      <div class="notice">
-        VERSIÓN 1.1 DE PRUEBAS:
-        El acceso utiliza Supabase Authentication.
-        Los indicadores visualizados son ficticios.
-        No se permite registrar datos reales todavía.
-      </div>
+        <section id="dashboard" class="page hidden">
+          <h1>Dashboard Ejecutivo</h1>
+          <p class="muted">
+            Indicadores preliminares de la base de datos.
+            El dashboard gerencial avanzado se incorporará
+            en la siguiente etapa.
+          </p>
+          <div id="resumen" class="metrics"></div>
+          <button id="btnActualizar" class="secondary">
+            Actualizar indicadores
+          </button>
+        </section>
 
-      <!-- DASHBOARD -->
+        <section id="registro" class="page hidden">
+          <h1>Registrar incidencia</h1>
+          <p class="muted">
+            Registro centralizado de reclamos,
+            garantías y reprocesos.
+          </p>
 
-      <section id="dashboard">
+          <form id="formIncidencia" class="panel">
+            <h3>Identificación del vehículo</h3>
 
-        <h1>Dashboard Ejecutivo</h1>
-        <p class="subtitle">
-          Indicadores de calidad y reprocesos
-        </p>
+            <div class="form-grid">
+              <div class="field">
+                <label for="sede">Sede *</label>
+                <select id="sede" required></select>
+              </div>
 
-        <div class="metrics" id="metrics"></div>
+              <div class="field">
+                <label for="placa">Placa *</label>
+                <input id="placa" maxlength="20" required>
+              </div>
 
-        <div class="panels">
+              <div class="field">
+                <label for="marca">Marca</label>
+                <input id="marca" maxlength="80">
+              </div>
 
-          <div class="card">
-            <h3>Incidencias por clasificación</h3>
-            <div id="chartTipos"></div>
+              <div class="field">
+                <label for="modelo">Modelo</label>
+                <input id="modelo" maxlength="80">
+              </div>
+
+              <div class="field">
+                <label for="anio">Año</label>
+                <input id="anio" type="number"
+                       min="1950" max="2100">
+              </div>
+            </div>
+
+            <h3>Información del cliente</h3>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="tipoCliente">Tipo de cliente *</label>
+                <select id="tipoCliente" required>
+                  <option value="Particular">Particular</option>
+                  <option value="Aseguradora">Aseguradora</option>
+                </select>
+              </div>
+
+              <div id="campoAseguradora" class="field hidden">
+                <label for="aseguradora">Aseguradora *</label>
+                <select id="aseguradora"></select>
+              </div>
+            </div>
+
+            <h3>Detalle de la incidencia</h3>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="tipo">Clasificación *</label>
+                <select id="tipo" required>
+                  <option value="Reclamo">Reclamo</option>
+                  <option value="Garantía">Garantía</option>
+                  <option value="Reproceso">Reproceso</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="descripcion">
+                Descripción de la incidencia *
+              </label>
+              <textarea id="descripcion"
+                        rows="5" required
+                        maxlength="5000"></textarea>
+            </div>
+
+            <div class="actions">
+              <button id="btnGuardar"
+                      class="primary" type="submit">
+                Registrar incidencia
+              </button>
+              <button class="secondary"
+                      type="reset">Limpiar</button>
+            </div>
+
+            <p id="registroMensaje"
+               class="feedback" role="status"></p>
+          </form>
+        </section>
+
+        <section id="casos" class="page hidden">
+          <h1>Control de casos</h1>
+          <p class="muted">
+            Expedientes registrados en Supabase.
+          </p>
+
+          <div class="panel">
+            <div class="filters">
+              <input id="buscar"
+                     placeholder="Buscar por placa o consecutivo">
+              <select id="filtroSede"></select>
+              <select id="filtroTipo">
+                <option value="">Todos los tipos</option>
+                <option value="Reclamo">Reclamos</option>
+                <option value="Garantía">Garantías</option>
+                <option value="Reproceso">Reprocesos</option>
+              </select>
+              <button id="btnBuscar"
+                      class="secondary">Consultar</button>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Consecutivo</th>
+                    <th>Fecha</th>
+                    <th>Sede</th>
+                    <th>Placa</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Decisión</th>
+                  </tr>
+                </thead>
+                <tbody id="tablaCasos"></tbody>
+              </table>
+            </div>
+
+            <div class="pager">
+              <button id="btnAnterior"
+                      class="secondary">Anterior</button>
+              <span id="paginacion">Página 1</span>
+              <button id="btnSiguiente"
+                      class="secondary">Siguiente</button>
+            </div>
+
+            <p id="casosMensaje"
+               class="feedback" role="status"></p>
           </div>
+        </section>
 
-          <div class="card">
-            <h3>Decisiones técnicas</h3>
-            <div id="chartDecisiones"></div>
-          </div>
-
-          <div class="card">
-            <h3>Distribución por sede</h3>
-            <div id="chartSedes"></div>
-          </div>
-
-          <div class="card">
-            <h3>Indicadores económicos</h3>
-            <p>Horas demostrativas: <b>20</b></p>
-            <p>Valor equivalente:</p>
-            <h1>₡300.000</h1>
-            <p class="subtitle">
-              Referencia: ₡15.000 por hora
+        <section id="perfil" class="page hidden">
+          <h1>Mi perfil</h1>
+          <div class="panel">
+            <p><strong>Nombre:</strong>
+              <span id="perfilNombre"></span>
             </p>
+            <p><strong>Correo:</strong>
+              <span id="perfilCorreo"></span>
+            </p>
+            <p><strong>Perfil:</strong>
+              <span id="perfilRol"></span>
+            </p>
+            <p><strong>Estado:</strong> Activo</p>
           </div>
-
-        </div>
-      </section>
-
-      <!-- REGISTRO -->
-
-      <section id="registro" class="hidden">
-        <h1>Registrar incidencia</h1>
-        <p class="subtitle">
-          Reclamos, garantías y reprocesos
-        </p>
-
-        <div class="card">
-          <h3>Registro pendiente de habilitación</h3>
-          <p>
-            El formulario definitivo se conectará con
-            Supabase después de comprobar los permisos.
-          </p>
-          <span class="status">
-            Funcionalidad en desarrollo
-          </span>
-        </div>
-      </section>
-
-      <!-- CASOS -->
-
-      <section id="casos" class="hidden">
-        <h1>Control de casos</h1>
-        <p class="subtitle">
-          Seguimiento de expedientes
-        </p>
-
-        <div class="card">
-          <h3>Expedientes centralizados</h3>
-          <p>
-            La consulta de casos reales se habilitará
-            después de validar la seguridad por perfil.
-          </p>
-        </div>
-      </section>
-
-      <!-- REPORTES -->
-
-      <section id="reportes" class="hidden">
-        <h1>Reportes y KPIs</h1>
-        <p class="subtitle">
-          Análisis de gestión y resultados
-        </p>
-
-        <div class="card">
-          <h3>Dashboard gerencial avanzado</h3>
-          <p>
-            Próximamente: tendencias, tiempos,
-            técnicos, causas raíz, reincidencias
-            e impacto económico.
-          </p>
-        </div>
-      </section>
-
-      <!-- ADMINISTRACIÓN -->
-
-      <section id="administracion" class="hidden">
-        <h1>Administración</h1>
-        <p class="subtitle">
-          Configuración y control de usuarios
-        </p>
-
-        <div class="card">
-          <h3>Administración general</h3>
-          <p>
-            Disponible para Jefatura de Operaciones.
-            Las funciones de edición permanecerán
-            deshabilitadas hasta completar las pruebas.
-          </p>
-        </div>
-      </section>
-
-      <!-- PERFIL Y DIAGNÓSTICO -->
-
-      <section id="perfil" class="hidden">
-        <h1>Mi perfil</h1>
-        <p class="subtitle">
-          Identificación y verificación de acceso
-        </p>
-
-        <div class="card">
-          <h3>Datos del usuario</h3>
-
-          <table class="info-table">
-            <tr>
-              <td>Nombre</td>
-              <td id="profileName">—</td>
-            </tr>
-            <tr>
-              <td>Correo</td>
-              <td id="profileEmail">—</td>
-            </tr>
-            <tr>
-              <td>Perfil</td>
-              <td id="profileRole">—</td>
-            </tr>
-            <tr>
-              <td>Estado</td>
-              <td id="profileStatus">—</td>
-            </tr>
-          </table>
-        </div>
-
-        <div class="card" style="margin-top:20px">
-          <h3>Comprobación inicial de Supabase</h3>
-
-          <div class="test-row">
-            <span>Autenticación</span>
-            <span id="testAuth">Pendiente</span>
-          </div>
-
-          <div class="test-row">
-            <span>Perfil en la base de datos</span>
-            <span id="testProfile">Pendiente</span>
-          </div>
-
-          <div class="test-row">
-            <span>Identificación del puesto</span>
-            <span id="testRole">Pendiente</span>
-          </div>
-
-          <p class="subtitle" style="margin-top:20px">
-            Estas comprobaciones no sustituyen
-            las pruebas de permisos de escritura.
-          </p>
-        </div>
-
-      </section>
-
-    </div>
-  </div>
-</div>
-
-<script type="module">
-
-import { createClient } from
-"https://esm.sh/@supabase/supabase-js@2";
-
-/* CONFIGURACIÓN SUPABASE */
-
-const SUPABASE_URL =
-"https://plqtustbwfyyvotfnmmi.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_LPboivdqilTgHbeq721G3g_5gelR9A5";
-
-const supabase = createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-/* ESTADO */
-
-let usuarioActual = null;
-let perfilActual = null;
-
-const $ = id => document.getElementById(id);
-
-const perfilesPermitidos = [
-  "OPERACIONES",
-  "CALIDAD",
-  "SAC",
-  "TALLER"
-];
-
-function mostrarLogin(mensaje = "") {
-  usuarioActual = null;
-  perfilActual = null;
-  $("appScreen").classList.add("hidden");
-  $("loginScreen").classList.remove("hidden");
-  $("loginMessage").textContent = mensaje;
-}
-
-function mostrarAplicacion() {
-  $("loginScreen").classList.add("hidden");
-  $("appScreen").classList.remove("hidden");
-}
-
-function cambiarVista(nombre) {
-  document.querySelectorAll(".content section")
-    .forEach(s => s.classList.add("hidden"));
-
-  $(nombre).classList.remove("hidden");
-
-  document.querySelectorAll(".menu button")
-    .forEach(b => {
-      b.classList.toggle(
-        "active",
-        b.dataset.view === nombre
-      );
-    });
-}
-
-/* IDENTIFICACIÓN DE PERFIL */
-
-async function cargarPerfil(user) {
-
-  const { data, error } = await supabase
-    .from("usuarios")
-    .select(`
-      nombre,
-      activo,
-      perfiles (
-        codigo,
-        nombre,
-        activo
-      )
-    `)
-    .eq("id", user.id)
-    .single();
-
-  if (error || !data) {
-    throw new Error(
-      "No fue posible consultar el perfil autorizado."
-    );
-  }
-
-  const perfil = data.perfiles;
-
-  if (
-    !data.activo ||
-    !perfil ||
-    !perfil.activo ||
-    !perfilesPermitidos.includes(perfil.codigo)
-  ) {
-    throw new Error(
-      "La cuenta no tiene un perfil activo autorizado."
-    );
-  }
-
-  return {
-    nombre: data.nombre,
-    codigo: perfil.codigo,
-    puesto: perfil.nombre
-  };
-}
-
-/* ABRIR SESIÓN */
-
-async function activarSesion(user) {
-
-  const perfil = await cargarPerfil(user);
-
-  usuarioActual = user;
-  perfilActual = perfil;
-
-  $("userDisplay").textContent =
-    perfil.nombre + " · " + perfil.puesto;
-
-  $("profileName").textContent = perfil.nombre;
-  $("profileEmail").textContent = user.email;
-  $("profileRole").textContent = perfil.puesto;
-  $("profileStatus").textContent = "Activo";
-
-  $("testAuth").textContent = "Correcto";
-  $("testProfile").textContent = "Correcto";
-  $("testRole").textContent = perfil.codigo;
-
-  /* CONTROL VISUAL DEL MENÚ */
-
-  const menuDashboard =
-    document.querySelector('[data-view="dashboard"]');
-
-  const menuReportes =
-    document.querySelector('[data-view="reportes"]');
-
-  const menuAdmin =
-    document.querySelector('[data-view="administracion"]');
-
-  const puedeVerGerencia =
-    ["OPERACIONES", "CALIDAD"].includes(perfil.codigo);
-
-  menuDashboard.classList.toggle(
-    "hidden", !puedeVerGerencia
-  );
-
-  menuReportes.classList.toggle(
-    "hidden", !puedeVerGerencia
-  );
-
-  menuAdmin.classList.toggle(
-    "hidden", perfil.codigo !== "OPERACIONES"
-  );
-
-  mostrarAplicacion();
-
-  cambiarVista(
-    puedeVerGerencia ? "dashboard" : "perfil"
-  );
-}
-
-/* INICIAR SESIÓN */
-
-$("loginForm").addEventListener(
-  "submit",
-  async event => {
-
-    event.preventDefault();
-
-    const boton = $("loginButton");
-    const correo = $("email").value.trim();
-    const clave = $("password").value;
-
-    boton.disabled = true;
-    boton.textContent = "Verificando acceso...";
-    $("loginMessage").textContent = "";
-
-    try {
-
-      const { data, error } =
-        await supabase.auth.signInWithPassword({
-          email: correo,
-          password: clave
-        });
-
-      if (error) {
-        throw new Error(
-          "No fue posible iniciar sesión. Verificá tus credenciales."
-        );
-      }
-
-      await activarSesion(data.user);
-
-      $("password").value = "";
-
-    } catch (error) {
-
-      await supabase.auth.signOut();
-
-      mostrarLogin(error.message);
-
-    } finally {
-
-      boton.disabled = false;
-      boton.textContent = "Iniciar sesión";
-
-    }
-  }
-);
-
-/* CERRAR SESIÓN */
-
-$("logoutButton").addEventListener(
-  "click",
-  async () => {
-    await supabase.auth.signOut();
-    mostrarLogin();
-    $("password").value = "";
-  }
-);
-
-/* NAVEGACIÓN */
-
-document.querySelectorAll("[data-view]")
-  .forEach(boton => {
-
-    boton.addEventListener("click", () => {
-      if (!perfilActual) return;
-
-      const vista = boton.dataset.view;
-
-      if (
-        ["dashboard", "reportes"].includes(vista) &&
-        !["OPERACIONES", "CALIDAD"]
-          .includes(perfilActual.codigo)
-      ) return;
-
-      if (
-        vista === "administracion" &&
-        perfilActual.codigo !== "OPERACIONES"
-      ) return;
-
-      cambiarVista(vista);
-    });
-
-  });
-
-/* DASHBOARD DE DEMOSTRACIÓN */
-
-const indicadores = [
-  ["Incidencias recibidas", "6", "Registros ficticios"],
-  ["Aceptados", "3", "Aceptación completa"],
-  ["Parcialmente aceptados", "1", "Aceptación parcial"],
-  ["Casos abiertos", "3", "Pendientes"],
-  ["Horas de reproceso", "20", "Horas ficticias"],
-  ["Impacto equivalente", "₡300.000", "₡15.000/h"],
-  ["Casos cerrados", "3", "Expedientes concluidos"],
-  ["Sin evaluar", "1", "Pendiente de decisión"]
-];
-
-$("metrics").innerHTML = indicadores.map(
-  item => `
-    <div class="card">
-      <div class="metric-label">${item[0]}</div>
-      <div class="metric-value">${item[1]}</div>
-      <div class="metric-foot">${item[2]}</div>
-    </div>
-  `
-).join("");
-
-function dibujarBarras(id, items) {
-
-  const max = Math.max(
-    ...items.map(item => item[1]), 1
-  );
-
-  $(id).innerHTML = items.map(
-    item => `
-      <div class="bar-item">
-        <div class="bar-top">
-          <span>${item[0]}</span>
-          <strong>${item[1]}</strong>
-        </div>
-        <div class="track">
-          <div class="fill"
-            style="width:${item[1] / max * 100}%">
-          </div>
-        </div>
+        </section>
       </div>
-    `
-  ).join("");
-}
+    </main>
+  </div>
 
-dibujarBarras("chartTipos", [
-  ["Reclamos", 3],
-  ["Garantías", 2],
-  ["Reprocesos", 1]
-]);
-
-dibujarBarras("chartDecisiones", [
-  ["Aceptados", 3],
-  ["Parcialmente aceptados", 1],
-  ["No aceptados", 1],
-  ["Pendientes", 1]
-]);
-
-dibujarBarras("chartSedes", [
-  ["Escazú", 4],
-  ["Heredia", 2]
-]);
-
-/* RESTAURAR SESIÓN EXISTENTE */
-
-async function iniciar() {
-
-  $("loginMessage").textContent =
-    "Comprobando sesión...";
-
-  try {
-
-    const { data, error } =
-      await supabase.auth.getUser();
-
-    if (error || !data.user) {
-      mostrarLogin();
-      return;
-    }
-
-    await activarSesion(data.user);
-
-  } catch (error) {
-
-    await supabase.auth.signOut();
-    mostrarLogin(
-      "La sesión no pudo verificarse. Iniciá sesión nuevamente."
-    );
-
-  }
-}
-
-iniciar();
-
-</script>
+  <script type="module" src="./js/app.js"></script>
 </body>
 </html>
